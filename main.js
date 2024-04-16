@@ -7,7 +7,21 @@ const longoButton = document.querySelector('.app__card-button--longo');
 const banner = document.querySelector('.app__image');
 const titulo = document.querySelector('.app__title');
 //const para criar array que vai remover active na classe ao clicar em outro botao de contexto
-const botoes = document.querySelectorAll('.app__card-button')
+const botoes = document.querySelectorAll('.app__card-button');
+//constante para incluir objeto som
+const musicaFocoInput = document.querySelector('#alternar-musica');
+//colocando o arquivo de audio em uma constante para garantir carregamento do arquivo no inicio, melhorando experiencia de usuario. Uso de objeto Audio. O metodo readfile poderia ser usado, mas o arquivo so seria carregado quando fosse utilizado
+const musica = new Audio ('/sons/luna-rise-part-one.mp3');
+musica.loop = true; //para que o audio continue no tempo que dura o modo foco
+
+//para inputs do tipo checkbox, se utiliza o evento change em vez de click
+musicaFocoInput.addEventListener('change', () => {
+    if(musica.paused) {
+        musica.play()
+    } else {
+        musica.pause()
+    }
+})
 
 //criando eventos para o click do usuário (evendo, funcao a partir do evento)
 focoButton.addEventListener('click', () => {
