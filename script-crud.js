@@ -51,7 +51,14 @@ formAdicionarTarefa.addEventListener('submit', (evento) => {
         descricao: textArea.value //puxa o que foi inserido no textarea
     }
     tarefas.push(tarefa) //inserindo os valores da const tarefa no array
+    //depois de incluir a tarefa no array, precisamos colocar o novo item na tela:
+    const elementoTarefa = criarElementoTarefa(tarefa)
+    ulTarefas.append(elementoTarefa)
+
     localStorage.setItem('tarefas', JSON.stringify(tarefas)) //armazendo a lista na localstorage para nao perder quando atualizar a página | uso de API JSON para converter a lista em string porque a localstorage so reconhece assim
+    
+    textArea.value = '' //limpando a caixa de texto apos armazenar a tarefa
+    formAdicionarTarefa.classList.add('hidden') //esconder o formulario apos registrar tarefa
 })
 
 //dentro da string tarefas, para cada elemento tarefa ele chama a funcao criarElementoTarefa recebendo tarefa como paramentro (criacao de elemento html para cada tarefa que o usuario insere na lista)
