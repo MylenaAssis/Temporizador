@@ -20,9 +20,12 @@ function criarElementoTarefa(tarefa) {
     `
 
     const paragrafo = document.createElement('p')
+    paragrafo.classList.add('app__section-task-list-item-description')
     paragrafo.textContent = tarefa.descricao //o elemento paragrafo do html recebe o conteudo digitado pelo usuario na tarefa
 
     const botao = document.createElement('button')
+    botao.classList.add('app_button-edit')
+
     const imagemBotao = document.createElement('img')
     imagemBotao.setAttribute('src', '/imagens/edit.png')
 
