@@ -23,8 +23,15 @@ function criarElementoTarefa(tarefa) {
     paragrafo.classList.add('app__section-task-list-item-description')
     paragrafo.textContent = tarefa.descricao //o elemento paragrafo do html recebe o conteudo digitado pelo usuario na tarefa
 
+    //criando botão de edit e sua função a partir do click
     const botao = document.createElement('button')
     botao.classList.add('app_button-edit')
+
+    botao.onclick = () => {
+        let novaDescricao = prompt('Informe o nome correto')
+        //reatribuindo o valor do paragrado (antes era o valor tarefa)
+        paragrafo.textContent = novaDescricao
+    }
 
     const imagemBotao = document.createElement('img')
     imagemBotao.setAttribute('src', '/imagens/edit.png')
