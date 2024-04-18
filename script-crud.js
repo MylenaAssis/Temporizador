@@ -6,6 +6,11 @@ const ulTarefas = document.querySelector('.app__section-task-list'); //puxando a
 
 const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [] //pegando as tarefas logo no início do carregamento. Lembrando que ele só le string e precisamos do array, uso o JSON para fazer o caminho oposto do que foi feito no evento submit. Se for o primeiro carregamento, não vai ter o que carregar, por isso adicionamos o ou (||) string vazia, porque nesse caso precisa ocorrer a criação dessa string para fazer o push das tarefas
 
+//criando uma função pra atualizar tarefas, evitando repetir codigo e facilitando manutençao - sera usada na insercao do valor tarefa no paragrafo e tambem na edicao de tarefas
+function atualizarTarefas () {
+    localStorage.setItem('tarefas', JSON.stringify(tarefas)) //armazendo a lista na localstorage para nao perder quando atualizar a página | uso de API JSON para converter a lista em string porque a localstorage so reconhece assim
+}
+
 //criando uma função que crie a estrutura do elemento tarefa no html
 function criarElementoTarefa(tarefa) {
     const li = document.createElement('li') //criando o elemento li no html
@@ -29,8 +34,10 @@ function criarElementoTarefa(tarefa) {
 
     botao.onclick = () => {
         let novaDescricao = prompt('Informe o nome correto')
-        //reatribuindo o valor do paragrado (antes era o valor tarefa)
-        paragrafo.textContent = novaDescricao
+        //reatribuindo o valor do paragrado (antes era o valor tarefa) no DOM
+        paragrafo.textContent = novaDescricao //atualizando a camada visual
+        tarefa.descricao = novaDescricao // atualizando camada de dados
+        atualizarTarefas() //atualizando local storage
     }
 
     const imagemBotao = document.createElement('img')
@@ -61,9 +68,7 @@ formAdicionarTarefa.addEventListener('submit', (evento) => {
     //depois de incluir a tarefa no array, precisamos colocar o novo item na tela:
     const elementoTarefa = criarElementoTarefa(tarefa)
     ulTarefas.append(elementoTarefa)
-
-    localStorage.setItem('tarefas', JSON.stringify(tarefas)) //armazendo a lista na localstorage para nao perder quando atualizar a página | uso de API JSON para converter a lista em string porque a localstorage so reconhece assim
-    
+    atualizarTarefas() //insere conteudo na local storage
     textArea.value = '' //limpando a caixa de texto apos armazenar a tarefa
     formAdicionarTarefa.classList.add('hidden') //esconder o formulario apos registrar tarefa
 })
