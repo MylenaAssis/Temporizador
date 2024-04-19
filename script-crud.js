@@ -4,8 +4,10 @@ const formAdicionarTarefa = document.querySelector('.app__form-add-task');
 const textArea = document.querySelector('.app__form-textarea');
 const ulTarefas = document.querySelector('.app__section-task-list'); //puxando a ul do html onde nosso li será inserido
 const CancelaAdicionarTarefaBt = document.querySelector('.app__form-footer__button--cancel'); //puxando o botão cancelar no form de inserir tarefas
+const paragrafoDescricaoTarefa = document.querySelector('.app__section-active-task-description'); //puxando o p onde vai aparecer a descrição da tarefa que foi selecionada na lista
 
 const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [] //pegando as tarefas logo no início do carregamento. Lembrando que ele só le string e precisamos do array, uso o JSON para fazer o caminho oposto do que foi feito no evento submit. Se for o primeiro carregamento, não vai ter o que carregar, por isso adicionamos o ou (||) string vazia, porque nesse caso precisa ocorrer a criação dessa string para fazer o push das tarefas
+let tarefaSelecionada = null //variavel criada para possibilitar desselecionar a tarefa selecionada
 
 //criando uma função pra atualizar tarefas, evitando repetir codigo e facilitando manutençao - sera usada na insercao do valor tarefa no paragrafo e tambem na edicao de tarefas
 function atualizarTarefas () {
@@ -34,8 +36,9 @@ function criarElementoTarefa(tarefa) {
     botao.classList.add('app_button-edit')
 
     botao.onclick = () => {
+        //debugger
         let novaDescricao = prompt('Informe o nome correto')
-        console.log('Noa descricao da tarefa: ', novaDescricao)
+        //console.log('Noa descricao da tarefa: ', novaDescricao)
         if (novaDescricao) { //se novaDescricao tem valor, faca..... Isso vai impedir salvar edicao em branco e null dentro do localstorage
             //reatribuindo o valor do paragrado (antes era o valor tarefa) no DOM
             paragrafo.textContent = novaDescricao //atualizando a camada visual
@@ -53,6 +56,23 @@ function criarElementoTarefa(tarefa) {
     li.append(svg)
     li.append(paragrafo)
     li.append(botao)
+
+    //inserindo a partir do click a descrição da tarefa que foi clicada no paragrafoDescricaoTarefa (destaque)
+    li.onclick = () => {
+        //remover seleção de todos os itens
+        document.querySelectorAll('.app__section-task-list-item-active').forEach(elemento => {
+            elemento.classList.remove('app__section-task-list-item-active')
+        });
+        if (tarefaSelecionada == tarefa) { //criando uma condição para desselecionar tarefa caso clique em cima de uma que ja esta selecionada (remover selecao atual)
+            paragrafoDescricaoTarefa.textContent = ''
+            tarefaSelecionada = null
+            return //early return porque nao precisa prosseguir c codigo
+        }
+        tarefaSelecionada = tarefa //guardando o valor da tarefa selecionada atualmente
+        paragrafoDescricaoTarefa.textContent = tarefa.descricao
+        //selecionar o li que foi clicado
+        li.classList.add('app__section-task-list-item-active') //adicionando a classe css que adiciona a borda de destaque
+    }
 
     return li //apos inserir tudo no li, retornar o elemento criado
 }
