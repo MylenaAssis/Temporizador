@@ -3,6 +3,7 @@ const adicionarTarefaBt = document.querySelector('.app__button--add-task');
 const formAdicionarTarefa = document.querySelector('.app__form-add-task');
 const textArea = document.querySelector('.app__form-textarea');
 const ulTarefas = document.querySelector('.app__section-task-list'); //puxando a ul do html onde nosso li será inserido
+const CancelaAdicionarTarefaBt = document.querySelector('.app__form-footer__button--cancel'); //puxando o botão cancelar no form de inserir tarefas
 
 const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [] //pegando as tarefas logo no início do carregamento. Lembrando que ele só le string e precisamos do array, uso o JSON para fazer o caminho oposto do que foi feito no evento submit. Se for o primeiro carregamento, não vai ter o que carregar, por isso adicionamos o ou (||) string vazia, porque nesse caso precisa ocorrer a criação dessa string para fazer o push das tarefas
 
@@ -34,10 +35,13 @@ function criarElementoTarefa(tarefa) {
 
     botao.onclick = () => {
         let novaDescricao = prompt('Informe o nome correto')
-        //reatribuindo o valor do paragrado (antes era o valor tarefa) no DOM
-        paragrafo.textContent = novaDescricao //atualizando a camada visual
-        tarefa.descricao = novaDescricao // atualizando camada de dados
-        atualizarTarefas() //atualizando local storage
+        console.log('Noa descricao da tarefa: ', novaDescricao)
+        if (novaDescricao) { //se novaDescricao tem valor, faca..... Isso vai impedir salvar edicao em branco e null dentro do localstorage
+            //reatribuindo o valor do paragrado (antes era o valor tarefa) no DOM
+            paragrafo.textContent = novaDescricao //atualizando a camada visual
+            tarefa.descricao = novaDescricao // atualizando camada de dados
+            atualizarTarefas() //atualizando local storage
+        }
     }
 
     const imagemBotao = document.createElement('img')
@@ -58,6 +62,10 @@ adicionarTarefaBt.addEventListener('click', () => {
     formAdicionarTarefa.classList.toggle('hidden')
 })
 
+function escondeFormulario() {
+    formAdicionarTarefa.classList.add('hidden')
+}
+
 //evento de submit ativa comportamento padrão de atualizar página, por meio do evento removemos isso
 formAdicionarTarefa.addEventListener('submit', (evento) => {
     evento.preventDefault();
@@ -70,8 +78,17 @@ formAdicionarTarefa.addEventListener('submit', (evento) => {
     ulTarefas.append(elementoTarefa)
     atualizarTarefas() //insere conteudo na local storage
     textArea.value = '' //limpando a caixa de texto apos armazenar a tarefa
-    formAdicionarTarefa.classList.add('hidden') //esconder o formulario apos registrar tarefa
+    escondeFormulario() //esconder o formulario apos registrar tarefa
 })
+
+//criando funcao que limpa o text area caso clique no botao cancelar e esconde o formulario
+const cancelarNovaTarefa = () => {
+    textArea.value = '';
+    escondeFormulario();
+}
+
+//associar a funcao cancelarNovaTarefa ao evento click no botao
+CancelaAdicionarTarefaBt.addEventListener('click', cancelarNovaTarefa)
 
 //dentro da string tarefas, para cada elemento tarefa ele chama a funcao criarElementoTarefa recebendo tarefa como paramentro (criacao de elemento html para cada tarefa que o usuario insere na lista)
 tarefas.forEach(tarefa => {
