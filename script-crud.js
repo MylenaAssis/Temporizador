@@ -8,7 +8,7 @@ const paragrafoDescricaoTarefa = document.querySelector('.app__section-active-ta
 
 const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [] //pegando as tarefas logo no início do carregamento. Lembrando que ele só le string e precisamos do array, uso o JSON para fazer o caminho oposto do que foi feito no evento submit. Se for o primeiro carregamento, não vai ter o que carregar, por isso adicionamos o ou (||) string vazia, porque nesse caso precisa ocorrer a criação dessa string para fazer o push das tarefas
 let tarefaSelecionada = null //variavel criada para possibilitar desselecionar a tarefa selecionada
-let liTarefaSelecionada = null 
+let liTarefaSelecionada = null //item de lista da tarefa selecionada
 
 //criando uma função pra atualizar tarefas, evitando repetir codigo e facilitando manutençao - sera usada na insercao do valor tarefa no paragrafo e tambem na edicao de tarefas
 function atualizarTarefas () {
@@ -67,9 +67,11 @@ function criarElementoTarefa(tarefa) {
         if (tarefaSelecionada == tarefa) { //criando uma condição para desselecionar tarefa caso clique em cima de uma que ja esta selecionada (remover selecao atual)
             paragrafoDescricaoTarefa.textContent = ''
             tarefaSelecionada = null
+            liTarefaSelecionada = null
             return //early return porque nao precisa prosseguir c codigo
         }
         tarefaSelecionada = tarefa //guardando o valor da tarefa selecionada atualmente
+        liTarefaSelecionada = li //guardar referencia tambem pro li elemento html
         paragrafoDescricaoTarefa.textContent = tarefa.descricao
         //selecionar o li que foi clicado
         li.classList.add('app__section-task-list-item-active') //adicionando a classe css que adiciona a borda de destaque
@@ -117,9 +119,10 @@ tarefas.forEach(tarefa => {
     ulTarefas.append(elementoTarefa) //insere os elementoTarefa na ul existente no html, que foi puxada para cá pela const ultarefas
 });
 
-//finalizando tarefa:
-document.addEventListener('focoFinalizado', () => {
-    if (tarefaSelecionada && liTarefaSelecionada) {
+//ouvindo o evento do broadcast e reagindo:
+document.addEventListener('FocoFinalizado', () => {
+    //se temos uma tarefa selecionada(objeto da tarefa) && se temos um elemento li dessa tarefa
+    if (tarefaSelecionada && liTarefaSelecionada) { 
         liTarefaSelecionada.classList.remove('app__section-task-list-item-active')
         liTarefaSelecionada.classList.add('app__section-task-list-item-complete')
         liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'disabled')

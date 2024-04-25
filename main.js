@@ -101,7 +101,8 @@ const contagemRegressiva = () => {
         //somBeep.play()
         //fazer broadcast de evento: comunicar que o evento aconteceu para todos os arquivos do projeto poderem ouvir
         //arquivos diferentes se comunicam via evento
-        const focoAtivo = html.getAttribute('data-contexto') == foco //pegar no html se o estado global é foco
+        const focoAtivo = html.getAttribute('data-contexto') == 'foco' //pegar no html se o estado global é foco
+        console.log(focoAtivo)
         if (focoAtivo) {
             const evento = new CustomEvent('FocoFinalizado')
             document.dispatchEvent(evento) //assim outras partes da aplicação podem ouvir o evento
