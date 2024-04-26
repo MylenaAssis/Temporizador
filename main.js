@@ -43,7 +43,7 @@ musicaFocoInput.addEventListener('change', () => {
 
 //criando eventos para o click do usuário (evendo, funcao a partir do evento)
 focoButton.addEventListener('click', () => {
-    tempoDecorridoEmSegundos = 10
+    tempoDecorridoEmSegundos = 1500
     alterarContexto ('foco')
     //manipulando classes com class list: adicionar "active" a classe do botão clicado para alterar cores indicando o contexto ativo
     focoButton.classList.add("active")

@@ -7,6 +7,7 @@ const CancelaAdicionarTarefaBt = document.querySelector('.app__form-footer__butt
 const paragrafoDescricaoTarefa = document.querySelector('.app__section-active-task-description'); //puxando o p onde vai aparecer a descrição da tarefa que foi selecionada na lista
 
 const btnRemoverConcluidas = document.querySelector('#btn-remover-concluidas') //puxando o botao de remover tarefas concluidas
+const btnRemoverTodas = document.querySelector('#btn-remover-todas')
 
 let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [] //pegando as tarefas logo no início do carregamento. Lembrando que ele só le string e precisamos do array, uso o JSON para fazer o caminho oposto do que foi feito no evento submit. Se for o primeiro carregamento, não vai ter o que carregar, por isso adicionamos o ou (||) string vazia, porque nesse caso precisa ocorrer a criação dessa string para fazer o push das tarefas
 let tarefaSelecionada = null //variavel criada para possibilitar desselecionar a tarefa selecionada
@@ -140,13 +141,17 @@ document.addEventListener('FocoFinalizado', () => {
     }
 })
 
-//excluir tarefas concluidas
-btnRemoverConcluidas.onclick = () => {
-    const seletor = ".app__section-task-list-item-complete" //seletor de tarefas completas
-    document.querySelectorAll(seletor).forEach(elemento => { //o seletor vai retornar um nodelist
+//excluir tarefas concluidas ou todas tarefas
+const removerTarefas = (somenteCompletas) => { //passando o paramentro para remover so as tarefas concluidas
+    let seletor = somenteCompletas ? ".app__section-task-list-item-complete" : "app__section-task-list-item" //se somenteCompletas true, seletor pega o id das concluidas, se false ele pega o seletor de tarefas
+    document.querySelectorAll(seletor).forEach(elemento => { //o seletor vai retornar um nodelist e para cada elemento vai executar a funcao remove
         elemento.remove() //removendo o elemento do DOM - camada visual
     })
-    tarefas = tarefas.filter(tarefa => !tarefa.completa) //filtrar todas as tarefas que nao estao completas
+
+    tarefas = somenteCompletas ? tarefas.filter(tarefa => !tarefa.completa) : [] //se somenteCompletas true, filtrar todas as tarefas que nao estao completas, se false array vazio
     atualizarTarefas() //atualiza localstorage
 }
+
+btnRemoverConcluidas.onclick = () => removerTarefas(true) //funcao removerTarefa passa false para executar
+btnRemoverTodas.onclick = () => removerTarefas(false) //funcao  
 
