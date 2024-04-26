@@ -58,23 +58,28 @@ function criarElementoTarefa(tarefa) {
     li.append(paragrafo)
     li.append(botao)
 
-    //inserindo a partir do click a descrição da tarefa que foi clicada no paragrafoDescricaoTarefa (destaque)
-    li.onclick = () => {
-        //remover seleção de todos os itens
-        document.querySelectorAll('.app__section-task-list-item-active').forEach(elemento => {
-            elemento.classList.remove('app__section-task-list-item-active')
-        });
-        if (tarefaSelecionada == tarefa) { //criando uma condição para desselecionar tarefa caso clique em cima de uma que ja esta selecionada (remover selecao atual)
-            paragrafoDescricaoTarefa.textContent = ''
-            tarefaSelecionada = null
-            liTarefaSelecionada = null
-            return //early return porque nao precisa prosseguir c codigo
+    if (tarefa.completa) {
+        li.classList.add('app__section-task-list-item-complete') //adiciona a classe css de tarefa finalizada
+        botao.setAttribute('disabled', 'disabled') //desabilita botao de edicao da tarefa finalizada
+    } else {
+        //inserindo a partir do click a descrição da tarefa que foi clicada no paragrafoDescricaoTarefa (destaque)
+        li.onclick = () => {
+            //remover seleção de todos os itens
+            document.querySelectorAll('.app__section-task-list-item-active').forEach(elemento => {
+                elemento.classList.remove('app__section-task-list-item-active')
+            });
+            if (tarefaSelecionada == tarefa) { //criando uma condição para desselecionar tarefa caso clique em cima de uma que ja esta selecionada (remover selecao atual)
+                paragrafoDescricaoTarefa.textContent = ''
+                tarefaSelecionada = null
+                liTarefaSelecionada = null
+                return //early return porque nao precisa prosseguir c codigo
+            }
+            tarefaSelecionada = tarefa //guardando o valor da tarefa selecionada atualmente
+            liTarefaSelecionada = li //guardar referencia tambem pro li elemento html
+            paragrafoDescricaoTarefa.textContent = tarefa.descricao
+            //selecionar o li que foi clicado
+            li.classList.add('app__section-task-list-item-active') //adicionando a classe css que adiciona a borda de destaque
         }
-        tarefaSelecionada = tarefa //guardando o valor da tarefa selecionada atualmente
-        liTarefaSelecionada = li //guardar referencia tambem pro li elemento html
-        paragrafoDescricaoTarefa.textContent = tarefa.descricao
-        //selecionar o li que foi clicado
-        li.classList.add('app__section-task-list-item-active') //adicionando a classe css que adiciona a borda de destaque
     }
 
     return li //apos inserir tudo no li, retornar o elemento criado
@@ -123,8 +128,11 @@ tarefas.forEach(tarefa => {
 document.addEventListener('FocoFinalizado', () => {
     //se temos uma tarefa selecionada(objeto da tarefa) && se temos um elemento li dessa tarefa
     if (tarefaSelecionada && liTarefaSelecionada) { 
-        liTarefaSelecionada.classList.remove('app__section-task-list-item-active')
-        liTarefaSelecionada.classList.add('app__section-task-list-item-complete')
-        liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'disabled')
+        liTarefaSelecionada.classList.remove('app__section-task-list-item-active') //remove a classe css de tarefa ativa
+        liTarefaSelecionada.classList.add('app__section-task-list-item-complete') //adiciona a classe css de tarefa finalizada
+        liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'disabled') //desabilita botao de edicao da tarefa finalizada
+        tarefaSelecionada.completa = true //criando nova propriedade p dizer que esta completa
+        atualizarTarefas() //atualizando localstorage
+
     }
 })
