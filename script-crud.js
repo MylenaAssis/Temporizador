@@ -6,7 +6,9 @@ const ulTarefas = document.querySelector('.app__section-task-list'); //puxando a
 const CancelaAdicionarTarefaBt = document.querySelector('.app__form-footer__button--cancel'); //puxando o botão cancelar no form de inserir tarefas
 const paragrafoDescricaoTarefa = document.querySelector('.app__section-active-task-description'); //puxando o p onde vai aparecer a descrição da tarefa que foi selecionada na lista
 
-const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [] //pegando as tarefas logo no início do carregamento. Lembrando que ele só le string e precisamos do array, uso o JSON para fazer o caminho oposto do que foi feito no evento submit. Se for o primeiro carregamento, não vai ter o que carregar, por isso adicionamos o ou (||) string vazia, porque nesse caso precisa ocorrer a criação dessa string para fazer o push das tarefas
+const btnRemoverConcluidas = document.querySelector('#btn-remover-concluidas') //puxando o botao de remover tarefas concluidas
+
+let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [] //pegando as tarefas logo no início do carregamento. Lembrando que ele só le string e precisamos do array, uso o JSON para fazer o caminho oposto do que foi feito no evento submit. Se for o primeiro carregamento, não vai ter o que carregar, por isso adicionamos o ou (||) string vazia, porque nesse caso precisa ocorrer a criação dessa string para fazer o push das tarefas
 let tarefaSelecionada = null //variavel criada para possibilitar desselecionar a tarefa selecionada
 let liTarefaSelecionada = null //item de lista da tarefa selecionada
 
@@ -58,6 +60,7 @@ function criarElementoTarefa(tarefa) {
     li.append(paragrafo)
     li.append(botao)
 
+    //se a tarefa estiver completa, 
     if (tarefa.completa) {
         li.classList.add('app__section-task-list-item-complete') //adiciona a classe css de tarefa finalizada
         botao.setAttribute('disabled', 'disabled') //desabilita botao de edicao da tarefa finalizada
@@ -136,3 +139,14 @@ document.addEventListener('FocoFinalizado', () => {
 
     }
 })
+
+//excluir tarefas concluidas
+btnRemoverConcluidas.onclick = () => {
+    const seletor = ".app__section-task-list-item-complete" //seletor de tarefas completas
+    document.querySelectorAll(seletor).forEach(elemento => { //o seletor vai retornar um nodelist
+        elemento.remove() //removendo o elemento do DOM - camada visual
+    })
+    tarefas = tarefas.filter(tarefa => !tarefa.completa) //filtrar todas as tarefas que nao estao completas
+    atualizarTarefas() //atualiza localstorage
+}
+
