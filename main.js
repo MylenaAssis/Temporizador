@@ -98,7 +98,7 @@ function alterarContexto (contexto) {
 const contagemRegressiva = () => {
     if(tempoDecorridoEmSegundos <= 0) {
         //som que indica fim do contador
-        //somBeep.play()
+        somBeep.play()
         //fazer broadcast de evento: comunicar que o evento aconteceu para todos os arquivos do projeto poderem ouvir
         //arquivos diferentes se comunicam via evento
         const focoAtivo = html.getAttribute('data-contexto') == 'foco' //pegar no html se o estado global é foco
